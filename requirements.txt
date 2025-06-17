@@ -17,7 +17,7 @@ constantly15.1.0
 cryptography3.4.8
 dbus-python1.2.18
 distro1.7.0
-distro-info1.1+ubuntu0.2
+distro-info==1.1.0
 exceptiongroup1.3.0
 fastapi0.115.12
 filelock3.18.0
