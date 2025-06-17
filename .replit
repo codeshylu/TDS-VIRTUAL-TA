@@ -1,8 +1,11 @@
-entrypoint = "main.py"
+run = "python3 main.py"
 
-[deployment]
-run = ["python3", "main.py"]
-deploymentTarget = "cloudrun"
+[interpreter]
+entrypoint = "main.py"
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-24_05"
 
 [unitTest]
 language = "python3"
@@ -10,11 +13,13 @@ language = "python3"
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix"]
 
-[nix]
-channel = "stable-24_05"
-
 [[ports]]
 localPort = 3000
 externalPort = 3000
+
+[[ports]]
+localPort = 81
+externalPort = 80
+
 
 
