@@ -27,13 +27,19 @@ def load_knowledge():
 
 # Create embeddings
 def create_embeddings(data):
-    texts = [item['text'] for item in data]
+    texts = [item['text'] for item in data if 'text' in item and item['text'].strip()]
+    if not texts:
+        return [], None
     embeddings = model.encode(texts, convert_to_tensor=True)
     return texts, embeddings
 
 # Search function
 def search(query, texts, embeddings):
+    if not texts or embeddings is None:
+        return "Knowledge base is empty. Please check your data files."
+    
     query_embedding = model.encode([query], convert_to_tensor=True)
     scores = cosine_similarity(query_embedding, embeddings)[0]
     top_index = scores.argmax()
     return texts[top_index]
+
