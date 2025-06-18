@@ -3,6 +3,6 @@ flask-cors==4.0.0
 gunicorn==20.1.0
 numpy==1.24.4
 sentence-transformers==2.2.2
-huggingface_hub==0.11.1
+huggingface_hub==0.13.4
 
 
