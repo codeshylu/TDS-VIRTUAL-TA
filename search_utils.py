@@ -4,7 +4,7 @@ import json
 import os
 
 # Load model
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer('paraphrase-albert-small-v2')
 
 # Limit number of items to embed to avoid OOM on Render
 MAX_KNOWLEDGE_ITEMS = 500  # You can try lowering this further if needed
