@@ -6,6 +6,9 @@ import os
 # Load model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
+# Limit number of items to embed to avoid OOM on Render
+MAX_KNOWLEDGE_ITEMS = 500  # You can try lowering this further if needed
+
 # Load your forum and course data from prepared files
 def load_knowledge():
     data = []
@@ -23,11 +26,16 @@ def load_knowledge():
             course_data = json.load(f)
             data.extend(course_data)
 
-    return data
+    # Filter out empty texts and limit
+    filtered_data = [item for item in data if 'text' in item and item['text'].strip()]
+    limited_data = filtered_data[:MAX_KNOWLEDGE_ITEMS]
+    print(f"✅ Loaded {len(limited_data)} items for embeddings")
+    
+    return limited_data
 
 # Create embeddings
 def create_embeddings(data):
-    texts = [item['text'] for item in data if 'text' in item and item['text'].strip()]
+    texts = [item['text'] for item in data]
     if not texts:
         return [], None
     embeddings = model.encode(texts, convert_to_tensor=True)
@@ -37,9 +45,10 @@ def create_embeddings(data):
 def search(query, texts, embeddings):
     if not texts or embeddings is None:
         return "Knowledge base is empty. Please check your data files."
-    
+
     query_embedding = model.encode([query], convert_to_tensor=True)
     scores = cosine_similarity(query_embedding, embeddings)[0]
     top_index = scores.argmax()
     return texts[top_index]
+
 
