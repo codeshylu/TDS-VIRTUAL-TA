@@ -3,13 +3,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 import json
 import os
 
-# Load model
+# Load lightweight model (Render-friendly)
 model = SentenceTransformer('paraphrase-albert-small-v2')
 
-# Limit number of items to embed to avoid OOM on Render
-MAX_KNOWLEDGE_ITEMS = 500  # You can try lowering this further if needed
+# Limit to avoid Render OOM issues
+MAX_KNOWLEDGE_ITEMS = 500
 
-# Load your forum and course data from prepared files
+# Load course and forum data from JSON files
 def load_knowledge():
     data = []
 
@@ -26,11 +26,11 @@ def load_knowledge():
             course_data = json.load(f)
             data.extend(course_data)
 
-    # Filter out empty texts and limit
+    # Filter out empty or invalid text entries and apply item limit
     filtered_data = [item for item in data if 'text' in item and item['text'].strip()]
     limited_data = filtered_data[:MAX_KNOWLEDGE_ITEMS]
     print(f"✅ Loaded {len(limited_data)} items for embeddings")
-    
+
     return limited_data
 
 # Create embeddings
@@ -41,7 +41,7 @@ def create_embeddings(data):
     embeddings = model.encode(texts, convert_to_tensor=True)
     return texts, embeddings
 
-# Search function
+# Semantic search function
 def search(query, texts, embeddings):
     if not texts or embeddings is None:
         return "Knowledge base is empty. Please check your data files."
@@ -50,5 +50,6 @@ def search(query, texts, embeddings):
     scores = cosine_similarity(query_embedding, embeddings)[0]
     top_index = scores.argmax()
     return texts[top_index]
+
 
 
